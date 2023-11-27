@@ -1,9 +1,9 @@
 from datetime import datetime
 import json
+import pytz  # Добавьте импорт pytz
 
-
-def time_now():
-    now = datetime.now()
+def time_now(timezone='Europe/Kiev'):  # Установите часовой пояс по умолчанию, например, для Киева
+    now = datetime.now(pytz.timezone(timezone))  # Используйте pytz для установки часового пояса
     date_time = now.strftime("%d.%m.%y %H:%M")
     return date_time
 
