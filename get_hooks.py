@@ -7,7 +7,7 @@ from operations import alert_status, define_alert_type, found_near_region, get_r
 
 app = Flask(__name__)
 
-webhook_url = "/"
+webhook_url = "/webhook"
 
 
 def subscribe_to_webhook():
