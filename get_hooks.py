@@ -4,8 +4,7 @@ from config import API_BOT_TOKEN, API_UKRAINE_ALARM_KEY, WEBHOOK_URL, SUBSCRIPTI
 import db
 import json
 import os
-from operations import alert_status, define_alert_type, found_near_region, get_region_name, region_is_state, \
-    find_state_by_region_id
+from operations import alert_status, define_alert_type, found_near_region, get_region_name
 
 app = Flask(__name__)
 
@@ -29,6 +28,7 @@ def subscribe_to_webhook():
         print("Failed to subscribe to the webhook")
 
 
+
 @app.route(webhook_url, methods=['POST'])
 def webhook_handler():
     try:
@@ -48,25 +48,28 @@ def send_main_region_alert(received_alert):
         users = db.get_all_users()
         for user in users:
             user_id = user['telegram_id']
-            if user['region_id'] == received_alert['regionId']:
-                if not alert_status(received_alert['status'].lower()):
-                    text = f"🟢 Відбій тривоги в '{get_region_name(received_alert['regionId'])}', регіоні біля вас!"
+            if user['region_id'] == str(received_alert['regionId']):
+
+                if alert_status(received_alert['status'].lower()):
+                    text = f"🔴 Увага! В вашому регіоні {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
                 else:
-                    text = f"🔴 Увага! В '{get_region_name(received_alert['regionId'])}', біля вас - {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+                    text = f"🟢 Відбій тривоги в вашому регіоні!"
                 send_message(user_id, text)
+
+
     except Exception as e:
         print('Error in send_main_region_alert ' + str(e))
-
-
-
 
 
 def send_alert_from_near_region(received_alert):
     try:
         users = db.get_near_region_turned_on()
         for user in users:
+            print(user)
             nearby_regions = found_near_region(user['region_id'])
+            print(nearby_regions)
             if int(received_alert['regionId']) in nearby_regions:
+
                 user_id = user['telegram_id']
                 if not alert_status(received_alert['status'].lower()):
                     text = f"🟢 Відбій тривоги в '{get_region_name(received_alert['regionId'])}', регіоні біля вас!"
@@ -91,5 +94,5 @@ def send_message(user_id, text):
 
 
 if __name__ == "__main__":
-    # subscribe_to_webhook()
+    #subscribe_to_webhook()
     app.run(debug=True, host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
