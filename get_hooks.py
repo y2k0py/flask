@@ -55,7 +55,7 @@ def send_main_region_alert(received_alert):
             send_message(user_id, text)
         else:
             print('User not in this region')
-            print str(received_alert['regionId']) + ' ' + user['region_id'])
+            print (str(received_alert['regionId']) + ' ' + user['region_id'])
 
 
 def send_alert_from_near_region(received_alert):
