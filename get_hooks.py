@@ -46,7 +46,7 @@ def webhook_handler():
 def send_main_region_alert(received_alert):
     users = db.get_all_users()
     for user in users:
-        if user['region_id'] == received_alert['regionId']:
+        if user['region_id'] == str(received_alert['regionId']):
             user_id = user['telegram_id']
             if alert_status(received_alert['status'].lower()):
                 text = f"🔴 Увага! В вашому регіоні {(define_alert_type(str(received_alert['alertType'])).lower())}!"
