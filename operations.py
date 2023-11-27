@@ -2,13 +2,14 @@ from datetime import datetime
 import json
 import pytz  # Добавьте импорт pytz
 
+
 def time_now(timezone='Europe/Kiev'):  # Установите часовой пояс по умолчанию, например, для Киева
     now = datetime.now(pytz.timezone(timezone))  # Используйте pytz для установки часового пояса
     date_time = now.strftime("%d.%m.%y %H:%M")
     return date_time
 
 
-async def find_full_region_info(region_name: str):
+def find_full_region_info(region_name: str):
     try:
         with open('regions.json', 'r') as json_file:
             regions_data = json.load(json_file)
@@ -96,11 +97,37 @@ def define_alert_type(alert_type):
         return 'Unknown alert type'
 
 
-def region_is_state(region_id):
-    name = get_region_name(region_id).split()
-    if name[-1].lower() == 'область':
-        return True
-    else:
+
+def find_state_by_region_id(target_region_id):
+    if target_region_id is None:
+        return None
+    json_data = read_json_file("regions.json")
+    for state in json_data["states"]:
+        for district in state["regionChildIds"]:
+            if district["regionId"] == target_region_id:
+                return state["regionName"]
+            for community in district["regionChildIds"]:
+                if community["regionId"] == target_region_id:
+                    return state["regionName"]
+
+    return None
+
+
+
+def region_is_state(region, r_type='id'):
+    if region is None:
         return False
+    try:
+        if r_type == 'name':
+            name = region
+        else:
+            name = get_region_name(region)
+        print(region, r_type)
+        if name.split()[-1].lower() == 'область':
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f'Помилка, region_is_state: {e}')
 
 
