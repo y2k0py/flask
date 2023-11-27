@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy
 from keyboards import on_near_regions, off_near_regions
-engine = create_engine('postgresql://postgres:4AFDaA1*-4c52db-*3DAd-aa1FEDF*CG@monorail.proxy.rlwy.net:32226/railway', echo=True)
+engine = create_engine('postgresql://postgres:4AFDaA1*-4c52db-*3DAd-aa1FEDF*CG@monorail.proxy.rlwy.net:32226/railway')
 
 # Create a base class for declarative class definitions
 Base = sqlalchemy.orm.declarative_base()
