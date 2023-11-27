@@ -28,7 +28,7 @@ def subscribe_to_webhook():
 
 
 
-@app.route(webhook_url, methods=['POST'])
+@app.route(webhook_url, methods=['POST', 'GET'])
 def webhook_handler():
     try:
         data = request.get_data().decode("utf-8")  # Получаем данные от вебхука в виде строки
