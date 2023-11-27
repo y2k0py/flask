@@ -3,6 +3,7 @@ import requests
 from config import API_BOT_TOKEN, API_UKRAINE_ALARM_KEY, WEBHOOK_URL, SUBSCRIPTION_URL
 import db
 import json
+import os
 from operations import alert_status, define_alert_type, found_near_region, get_region_name
 
 app = Flask(__name__)
@@ -86,4 +87,4 @@ def send_message(user_id, text):
 
 if __name__ == "__main__":
     subscribe_to_webhook()
-    app.run(port=5000)
+    app.run(debug=True, port=os.getenv("PORT", default=5000))
