@@ -29,7 +29,7 @@ def subscribe_to_webhook():
 
 
 
-@app.route(webhook_url, methods=['POST', 'GET'])
+@app.route(webhook_url, methods=['POST'])
 def webhook_handler():
     try:
         data = request.get_data().decode("utf-8")  # Получаем данные от вебхука в виде строки
@@ -47,16 +47,16 @@ def send_main_region_alert(received_alert):
     try:
         users = db.get_all_users()
         for user in users:
-            if user['region_id'] == received_alert['regionId']:
-                user_id = user['telegram_id']
+            user_id = user['telegram_id']
+            if user['region_id'] == str(received_alert['regionId']):
+
                 if alert_status(received_alert['status'].lower()):
-                    text = f"🔴 Увага! В вашому регіоні {(define_alert_type(str(received_alert['alertType'])).lower())}!"
+                    text = f"🔴 Увага! В вашому регіоні {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
                 else:
                     text = f"🟢 Відбій тривоги в вашому регіоні!"
                 send_message(user_id, text)
-            else:
-                print('User not in this region')
-                print (f'region id: {received_alert["regionId"]}, user region id: {user["region_id"]}')
+
+
     except Exception as e:
         print('Error in send_main_region_alert ' + str(e))
 
@@ -69,20 +69,22 @@ def send_alert_from_near_region(received_alert):
             nearby_regions = found_near_region(user['region_id'])
             print(nearby_regions)
             if int(received_alert['regionId']) in nearby_regions:
-                print('Alert in near region')
+
                 user_id = user['telegram_id']
                 if not alert_status(received_alert['status'].lower()):
                     text = f"🟢 Відбій тривоги в '{get_region_name(received_alert['regionId'])}', регіоні біля вас!"
                 else:
-                    text = f"🔴 Увага! В '{get_region_name(received_alert['regionId'])}', біля вас - {(define_alert_type(str(received_alert['alertType'])).lower())}!"
+                    text = f"🔴 Увага! В '{get_region_name(received_alert['regionId'])}', біля вас - {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
                 send_message(user_id, text)
     except Exception as e:
         print('Error in send_alert_from_near_region ' + str(e))
 
 
 def send_message(user_id, text):
+    print('send_message')
     bot_url = f'https://api.telegram.org/bot{API_BOT_TOKEN}'
     url = f'{bot_url}/sendMessage?chat_id={user_id}&text={text}'
+    print('send_message url: ' + url)
     response = requests.get(url)
     print(response)
 
@@ -92,6 +94,5 @@ def send_message(user_id, text):
 
 
 if __name__ == "__main__":
-    subscribe_to_webhook()
+    #subscribe_to_webhook()
     app.run(debug=True, host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
-
