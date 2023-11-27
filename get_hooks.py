@@ -72,9 +72,9 @@ def send_alert_from_near_region(received_alert):
 
                 user_id = user['telegram_id']
                 if not alert_status(received_alert['status'].lower()):
-                    text = f"🟢 Відбій тривоги в '{get_region_name(received_alert['regionId'])}', регіоні біля вас!"
+                    text = f"🟢 Відбій тривоги в '{get_region_name(str(received_alert['regionId']))}', регіоні біля вас!"
                 else:
-                    text = f"🔴 Увага! В '{get_region_name(received_alert['regionId'])}', біля вас - {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+                    text = f"🔴 Увага! В '{get_region_name(str(received_alert['regionId']))}', біля вас - {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
                 send_message(user_id, text)
     except Exception as e:
         print('Error in send_alert_from_near_region ' + str(e))
