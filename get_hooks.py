@@ -44,34 +44,40 @@ def webhook_handler():
 
 
 def send_main_region_alert(received_alert):
-    users = db.get_all_users()
-    for user in users:
-        if user['region_id'] == str(received_alert['regionId']):
-            user_id = user['telegram_id']
-            if alert_status(received_alert['status'].lower()):
-                text = f"🔴 Увага! В вашому регіоні {(define_alert_type(str(received_alert['alertType'])).lower())}!"
+    try:
+        users = db.get_all_users()
+        for user in users:
+            if user['region_id'] == received_alert['regionId']:
+                user_id = user['telegram_id']
+                if alert_status(received_alert['status'].lower()):
+                    text = f"🔴 Увага! В вашому регіоні {(define_alert_type(str(received_alert['alertType'])).lower())}!"
+                else:
+                    text = f"🟢 Відбій тривоги в вашому регіоні!"
+                send_message(user_id, text)
             else:
-                text = f"🟢 Відбій тривоги в вашому регіоні!"
-            send_message(user_id, text)
-        else:
-            print('User not in this region')
-            print (str(received_alert['regionId']) + ' ' + user['region_id'])
+                print('User not in this region')
+                print (f'region id: {received_alert["regionId"]}, user region id: {user["region_id"]}')
+    except Exception as e:
+        print('Error in send_main_region_alert ' + str(e))
 
 
 def send_alert_from_near_region(received_alert):
-    users = db.get_near_region_turned_on()
-    for user in users:
-        print(user)
-        nearby_regions = found_near_region(user['region_id'])
-        print(nearby_regions)
-        if int(received_alert['regionId']) in nearby_regions:
-            print('Alert in near region')
-            user_id = user['telegram_id']
-            if not alert_status(received_alert['status'].lower()):
-                text = f"🟢 Відбій тривоги в '{get_region_name(received_alert['regionId'])}', регіоні біля вас!"
-            else:
-                text = f"🔴 Увага! В '{get_region_name(received_alert['regionId'])}', біля вас - {(define_alert_type(str(received_alert['alertType'])).lower())}!"
-            send_message(user_id, text)
+    try:
+        users = db.get_near_region_turned_on()
+        for user in users:
+            print(user)
+            nearby_regions = found_near_region(user['region_id'])
+            print(nearby_regions)
+            if int(received_alert['regionId']) in nearby_regions:
+                print('Alert in near region')
+                user_id = user['telegram_id']
+                if not alert_status(received_alert['status'].lower()):
+                    text = f"🟢 Відбій тривоги в '{get_region_name(received_alert['regionId'])}', регіоні біля вас!"
+                else:
+                    text = f"🔴 Увага! В '{get_region_name(received_alert['regionId'])}', біля вас - {(define_alert_type(str(received_alert['alertType'])).lower())}!"
+                send_message(user_id, text)
+    except Exception as e:
+        print('Error in send_alert_from_near_region ' + str(e))
 
 
 def send_message(user_id, text):
