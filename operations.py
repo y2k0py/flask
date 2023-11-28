@@ -130,4 +130,4 @@ def region_is_state(region, r_type='id'):
     except Exception as e:
         print(f'Помилка, region_is_state: {e}')
 
-print(get_region_name("17"))
+
