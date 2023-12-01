@@ -11,7 +11,7 @@ Base = sqlalchemy.orm.declarative_base()
 # Define the User model
 class User(Base):
     __tablename__ = 'users'
-    telegram_id = Column(Integer, primary_key=True)
+    telegram_id = Column(BigInteger, primary_key=True)
     region_id = Column(String)
     near_regions = Column(Boolean, default=False)
     additional_region = Column(String)
