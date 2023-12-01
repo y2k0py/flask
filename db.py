@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, BigInteger
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy
 from keyboards import on_near_regions, off_near_regions
