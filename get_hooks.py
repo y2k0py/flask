@@ -95,4 +95,4 @@ def send_message(user_id, text):
 
 if __name__ == "__main__":
     subscribe_to_webhook()
-    app.run(debug=True, host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
