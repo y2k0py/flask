@@ -69,7 +69,7 @@ def send_additional_region_alert(received_alert):
                 if alert_status(received_alert['status'].lower()):
                     text = f"🔴 Увага! В додатковій області {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
                 else:
-                    text = f"🟢 Відбій тривоги в вашому регіоні!"
+                    text = f"🟢 Відбій тривоги в додатковій області!"
                 send_message(user_id, text)
     except Exception as e:
         print('Error in send_additional_region_alert ' + str(e))
