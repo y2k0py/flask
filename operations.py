@@ -109,7 +109,6 @@ def find_state_by_region_id(target_region_id):
             for community in district["regionChildIds"]:
                 if community["regionId"] == target_region_id:
                     return state["regionName"]
-
     return None
 
 
@@ -131,3 +130,4 @@ def region_is_state(region, r_type='id'):
         print(f'Помилка, region_is_state: {e}')
 
 
+print(get_region_name('5'))

@@ -30,7 +30,8 @@ session = Session()
 
 def get_all_users():
     users = session.query(User).all()
-    user_list = [{'telegram_id': user.telegram_id, 'region_id': user.region_id} for user in users]
+    user_list = [{'telegram_id': user.telegram_id, 'region_id': user.region_id, 'near_region': user.near_regions,
+                  'additional_region': user.additional_region} for user in users]
     return user_list
 
 def get_region_by_id(user_id):
