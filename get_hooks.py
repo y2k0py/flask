@@ -28,7 +28,6 @@ def subscribe_to_webhook():
         print("Failed to subscribe to the webhook")
 
 
-
 @app.route(webhook_url, methods=['POST'])
 def webhook_handler():
     try:
@@ -55,10 +54,24 @@ def send_main_region_alert(received_alert):
                 else:
                     text = f"🟢 Відбій тривоги в вашому регіоні!"
                 send_message(user_id, text)
-
-
     except Exception as e:
         print('Error in send_main_region_alert ' + str(e))
+
+
+def send_additional_region_alert(received_alert):
+    try:
+        users = db.get_all_users()
+        for user in users:
+            user_id = user['telegram_id']
+            if user['additional_region'] == str(received_alert['regionId']):
+
+                if alert_status(received_alert['status'].lower()):
+                    text = f"🔴 Увага! В додатковій області {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+                else:
+                    text = f"🟢 Відбій тривоги в вашому регіоні!"
+                send_message(user_id, text)
+    except Exception as e:
+        print('Error in send_additional_region_alert ' + str(e))
 
 
 def send_alert_from_near_region(received_alert):
