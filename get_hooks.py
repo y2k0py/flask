@@ -36,6 +36,7 @@ def webhook_handler():
         print("Received webhook data:", data_dict)
         send_main_region_alert(data_dict)
         send_alert_from_near_region(data_dict)
+        send_additional_region_alert(data_dict)
         return jsonify({"status": "success"})
     except Exception as e:
         app.logger.error(f"Error processing webhook data: {str(e)}")
