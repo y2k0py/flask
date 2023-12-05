@@ -1,4 +1,4 @@
-API_BOT_TOKEN = '6620622316:AAEkMcE86iDIaLjSAJ5zZLzs4BN1kbqq1XU'
+API_BOT_TOKEN = '6620622316:AAFf0fBFe5amuqKwhTRWFDukZRVvcly7pbA'
 
 API_UKRAINE_ALARM_KEY = 'ce31c4d1:ef8a508803427cf5fc7814f02860dfc1'
 WEBHOOK_URL = 'https://flask-production-486a.up.railway.app/webhook'
