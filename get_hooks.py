@@ -92,5 +92,7 @@ def send_message(user_id, text):
 
 
 if __name__ == "__main__":
+    from waitress import serve
+
     subscribe_to_webhook()
-    app.run(host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
+    serve(app, host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))

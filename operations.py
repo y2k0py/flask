@@ -10,15 +10,7 @@ def time_now(timezone='Europe/Kiev'):  # Установите часовой п�
 
 
 def find_full_region_info(region_name: str):
-    try:
-        with open('regions.json', 'r') as json_file:
-            regions_data = json.load(json_file)
-    except FileNotFoundError:
-        print("Error: File 'regions.json' not found.")
-        return None
-    except json.JSONDecodeError:
-        print("Error: Unable to decode JSON from 'regions.json'.")
-        return None
+    regions_data = read_json_file('regions.json')
 
     region_name_lower = region_name.lower()
 
@@ -65,7 +57,6 @@ def alert_status(status):
 
 
 def get_region_name(region_id):
-    print('get_region_name')
     data = read_json_file('regions.json')
     for state in data['states']:
         if state['regionId'] == region_id:
@@ -128,4 +119,4 @@ def region_is_state(region, r_type='id'):
         print(f'Помилка, region_is_state: {e}')
 
 
-print(get_region_name('5'))
+
