@@ -97,7 +97,6 @@ def define_alert_type(alert_type):
         return 'Unknown alert type'
 
 
-
 def find_state_by_region_id(target_region_id):
     if target_region_id is None:
         return None
@@ -110,7 +109,6 @@ def find_state_by_region_id(target_region_id):
                 if community["regionId"] == target_region_id:
                     return state["regionName"]
     return None
-
 
 
 def region_is_state(region, r_type='id'):
