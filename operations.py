@@ -40,7 +40,7 @@ def found_near_region(region_id):
 
 def read_json_file(file_name):
     try:
-        with open(file_name, 'r') as json_file:
+        with open(file_name, 'r', encoding="utf-8") as json_file:
             data = json.load(json_file)
         return data
     except FileNotFoundError:
