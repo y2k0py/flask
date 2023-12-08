@@ -117,6 +117,3 @@ def region_is_state(region, r_type='id'):
             return False
     except Exception as e:
         print(f'Помилка, region_is_state: {e}')
-
-
-
