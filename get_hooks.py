@@ -99,20 +99,31 @@ def send_alert_from_near_region(received_alert, user):
         send_message(user_id, text)
 
 
+def change_gender(region_name):
+    if region_name is not None:
+        if region_name.endswith('ська область'):
+            return region_name.replace('ська область', 'ській області')
+        elif region_name.endswith('зька область'):
+            return region_name.replace('зька область', 'зькій області')
+        else:
+            return region_name
+
+
 def generate_alert_text(received_alert, is_main_region=False, is_nearby=False):
     # Генерируем текст уведомления в зависимости от типа и статуса уведомления
     if alert_status(received_alert['status'].lower()):
-        prefix = "🔴 Увага!"
+        prefix = f"🔴 Увага! {(define_alert_type(str(received_alert['alarmType'])))} 🔴"
     else:
-        prefix = "🟢 Відбій тривоги"
+        prefix = "🟢 Відбій тривоги 🟢"
 
     if is_nearby:
         region_name = get_region_name(str(received_alert['regionId']))
-        return f"{prefix} В '{region_name}', регіоні біля вас!"
+        formated_region_name = change_gender(region_name)
+        return f"{prefix}\n\n🌍 В {formated_region_name}, біля вас!"
     elif is_main_region:
-        return f"{prefix} В вашому регіоні {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+        return f"{prefix}\n\n🌍 В вашій області!"
     else:
-        return f"{prefix} В додатковій області {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+        return f"{prefix}\n\n🌍 В додатковій області!"
 
 
 def send_message(user_id, text):
