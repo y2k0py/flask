@@ -5,6 +5,7 @@ import db
 import json
 import os
 from operations import alert_status, define_alert_type, found_near_region, get_region_name
+import threading
 
 app = Flask(__name__)
 
@@ -43,48 +44,79 @@ def webhook_handler():
 
 def send_alerts(received_alert):
     users = db.get_all_users()
+
+    threads = []
+
     for user in users:
         if user['notifications']:
-            send_main_region_alert(received_alert, user)
-            send_additional_region_alert(received_alert, user)
-            send_alert_from_near_region(received_alert, user)
+            # Создаем поток для отправки уведомлений пользователю и добавляем его в список потоков
+            thread = threading.Thread(target=send_user_alert, args=(received_alert, user))
+            threads.append(thread)
+            # Запускаем поток
+            thread.start()
+
+    # Ожидаем завершения всех потоков
+    for thread in threads:
+        thread.join()
+
+
+def send_user_alert(received_alert, user):
+    # Отправляем уведомление о главном регионе
+    send_main_region_alert(received_alert, user)
+
+    # Отправляем уведомление о дополнительном регионе
+    send_additional_region_alert(received_alert, user)
+
+    # Отправляем уведомление о близком регионе
+    send_alert_from_near_region(received_alert, user)
 
 
 def send_main_region_alert(received_alert, user):
+    # Определяем ID пользователя и текст сообщения
     user_id = user['telegram_id']
     if user['region_id'] == str(received_alert['regionId']):
-
-        if alert_status(received_alert['status'].lower()):
-            text = f"🔴 Увага! В вашому регіоні {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
-        else:
-            text = f"🟢 Відбій тривоги в вашому регіоні!"
+        text = generate_alert_text(received_alert, is_main_region=True)
         send_message(user_id, text)
 
 
 def send_additional_region_alert(received_alert, user):
+    # Определяем ID пользователя и текст сообщения
     user_id = user['telegram_id']
     if user['additional_region'] == str(received_alert['regionId']):
-
-        if alert_status(received_alert['status'].lower()):
-            text = f"🔴 Увага! В додатковій області {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
-        else:
-            text = f"🟢 Відбій тривоги в додатковій області!"
+        text = generate_alert_text(received_alert, is_main_region=False)
         send_message(user_id, text)
 
 
 def send_alert_from_near_region(received_alert, user):
+    # Получаем близлежащие регионы пользователя
     nearby_regions = found_near_region(user['region_id'])
-    if int(received_alert['regionId']) in nearby_regions:
 
+    # Проверяем, находится ли регион уведомления среди близлежащих
+    if int(received_alert['regionId']) in nearby_regions:
+        # Определяем ID пользователя и текст сообщения
         user_id = user['telegram_id']
-        if not alert_status(received_alert['status'].lower()):
-            text = f"🟢 Відбій тривоги в '{get_region_name(str(received_alert['regionId']))}', регіоні біля вас!"
-        else:
-            text = f"🔴 Увага! В '{get_region_name(str(received_alert['regionId']))}', біля вас - {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+        text = generate_alert_text(received_alert, is_main_region=False, is_nearby=True)
         send_message(user_id, text)
 
 
+def generate_alert_text(received_alert, is_main_region=False, is_nearby=False):
+    # Генерируем текст уведомления в зависимости от типа и статуса уведомления
+    if alert_status(received_alert['status'].lower()):
+        prefix = "🔴 Увага!"
+    else:
+        prefix = "🟢 Відбій тривоги"
+
+    if is_nearby:
+        region_name = get_region_name(str(received_alert['regionId']))
+        return f"{prefix} В '{region_name}', регіоні біля вас!"
+    elif is_main_region:
+        return f"{prefix} В вашому регіоні {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+    else:
+        return f"{prefix} В додатковій області {(define_alert_type(str(received_alert['alarmType'])).lower())}!"
+
+
 def send_message(user_id, text):
+    # Отправляем сообщение через Telegram API
     bot_url = f'https://api.telegram.org/bot{API_BOT_TOKEN}'
     url = f'{bot_url}/sendMessage?chat_id={user_id}&text={text}'
     response = requests.get(url)
