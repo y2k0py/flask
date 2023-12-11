@@ -119,11 +119,11 @@ def generate_alert_text(received_alert, is_main_region=False, is_nearby=False):
     if is_nearby:
         region_name = get_region_name(str(received_alert['regionId']))
         formated_region_name = change_gender(region_name)
-        return f"{prefix}\n\n🌍 В {formated_region_name}, біля вас!"
+        return f"{prefix}\n🌍 В {formated_region_name}, біля вас!"
     elif is_main_region:
-        return f"{prefix}\n\n🌍 В вашій області!"
+        return f"{prefix}\n🌍 В вашій області!"
     else:
-        return f"{prefix}\n\n🌍 В додатковій області!"
+        return f"{prefix}\n🌍 В додатковій області!"
 
 
 def send_message(user_id, text):
