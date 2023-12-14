@@ -2,9 +2,8 @@ from flask import Flask, request, jsonify
 import requests
 from config import API_BOT_TOKEN, API_UKRAINE_ALARM_KEY, WEBHOOK_URL, SUBSCRIPTION_URL
 import db
-import json
 import os
-from operations import alert_status, define_alert_type, found_near_region, get_region_name
+from operations import *
 import threading
 
 app = Flask(__name__)
@@ -44,16 +43,19 @@ def webhook_handler():
 
 def send_alerts(received_alert):
     users = db.get_all_users()
-
+    time_from_alert = convert_time_from_alert(received_alert['createdAt'])
     threads = []
 
     for user in users:
+
+        time_zone = time_zone_to_time(user['time_zone'])
         if user['notifications']:
-            # Создаем поток для отправки уведомлений пользователю и добавляем его в список потоков
-            thread = threading.Thread(target=send_user_alert, args=(received_alert, user))
-            threads.append(thread)
-            # Запускаем поток
-            thread.start()
+            if time_zone[0] <= time(time_from_alert[0], time_from_alert[1]) <= time_zone[1]:
+                # Создаем поток для отправки уведомлений пользователю и добавляем его в список потоков
+                thread = threading.Thread(target=send_user_alert, args=(received_alert, user))
+                threads.append(thread)
+                # Запускаем поток
+                thread.start()
 
     # Ожидаем завершения всех потоков
     for thread in threads:

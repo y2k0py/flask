@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 import json
 import pytz  # Добавьте импорт pytz
 
@@ -117,3 +117,26 @@ def region_is_state(region, r_type='id'):
             return False
     except Exception as e:
         print(f'Помилка, region_is_state: {e}')
+
+
+def time_zone_to_time(time_zone):
+    try:
+        if time_zone == 815:
+            return time(8, 0), time(15, 0)
+        elif time_zone == 823:
+            return time(8, 0), time(23, 0)
+        elif time_zone == 1722:
+            return time(17, 0), time(22, 0)
+        elif time_zone == 0:
+            return time(0, 0), time(23, 59)
+    except Exception as e:
+        print(f'Помилка, time_zone_to_time: {e}')
+
+
+def convert_time_from_alert(alert_time):
+    try:
+        given_time = datetime.strptime(alert_time, '%Y-%m-%dT%H:%M:%SZ')
+        given_hours, given_minutes = given_time.hour, given_time.minute
+        return [given_hours, given_minutes]
+    except Exception as e:
+        print(f'Помилка, convert_time_from_alert: {e}')
