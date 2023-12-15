@@ -122,13 +122,13 @@ def region_is_state(region, r_type='id'):
 def time_zone_to_time(time_zone):
     try:
         if time_zone == 815:
-            return time(8, 0), time(15, 0)
+            return [time(8, 0), time(15, 0)]
         elif time_zone == 823:
-            return time(8, 0), time(23, 0)
+            return [time(8, 0), time(23, 0)]
         elif time_zone == 1722:
-            return time(17, 0), time(22, 0)
+            return [time(17, 0), time(22, 0)]
         elif time_zone == 0:
-            return time(0, 0), time(23, 59)
+            return [time(0, 0), time(23, 59)]
     except Exception as e:
         print(f'Помилка, time_zone_to_time: {e}')
 
