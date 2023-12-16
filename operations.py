@@ -3,10 +3,13 @@ import json
 import pytz  # Добавьте импорт pytz
 
 
-def time_now(timezone='Europe/Kiev'):  # Установите часовой пояс по умолчанию, например, для Киева
-    now = datetime.now(pytz.timezone(timezone))  # Используйте pytz для установки часового пояса
-    date_time = now.strftime("%d.%m.%y %H:%M")
-    return date_time
+def time_now(timezone='Europe/Kiev'):
+    try:
+        now = datetime.now(pytz.timezone(timezone))
+        current_time = now.time()
+        return current_time
+    except Exception as e:
+        print(f'Ошибка, time_now: {e}')
 
 
 def find_full_region_info(region_name: str):
@@ -130,13 +133,7 @@ def time_zone_to_time(time_zone):
         elif time_zone == 0:
             return [time(0, 0), time(23, 59)]
     except Exception as e:
-        print(f'Помилка, time_zone_to_time: {e}')
+        print(f'Ошибка, time_zone_to_time: {e}')
 
 
-def convert_time_from_alert(alert_time):
-    try:
-        given_time = datetime.strptime(alert_time, '%Y-%m-%dT%H:%M:%SZ')
-        given_hours, given_minutes = given_time.hour, given_time.minute
-        return [given_hours, given_minutes]
-    except Exception as e:
-        print(f'Помилка, convert_time_from_alert: {e}')
+

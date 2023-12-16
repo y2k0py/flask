@@ -43,14 +43,14 @@ def webhook_handler():
 
 def send_alerts(received_alert):
     users = db.get_all_users()
-    time_from_alert = convert_time_from_alert(received_alert['createdAt'])
+    time_n = time_now()
     threads = []
 
     for user in users:
 
         time_zone = time_zone_to_time(user['time_zone'])
         if user['notifications']:
-            if time_zone[0] <= time(time_from_alert[0], time_from_alert[1]) <= time_zone[1]:
+            if time_zone[0] <= time_n <= time_zone[1]:
                 # Создаем поток для отправки уведомлений пользователю и добавляем его в список потоков
                 thread = threading.Thread(target=send_user_alert, args=(received_alert, user))
                 threads.append(thread)
