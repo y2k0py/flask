@@ -129,11 +129,15 @@ def generate_alert_text(received_alert, is_main_region=False, is_nearby=False):
 
 
 def send_message(user_id, text):
-    # Отправляем сообщение через Telegram API
     bot_url = f'https://api.telegram.org/bot{API_BOT_TOKEN}'
     url = f'{bot_url}/sendMessage?chat_id={user_id}&text={text}'
     response = requests.get(url)
+
     print(f'Status code of sending message to user: {response.status_code}')
+
+    if response.status_code == 403:
+        db.delete_user(user_id)
+        print(f'User was successful deleted ID:{user_id}')
 
 
 if __name__ == "__main__":

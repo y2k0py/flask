@@ -71,3 +71,14 @@ def get_time_zone(user_id):
     except Exception as e:
         session.rollback()
         print(f'Помилка, get_time_zone: {e}')
+
+
+def delete_user(user_id):
+    try:
+        user = session.query(User).filter_by(telegram_id=user_id).first()
+        session.delete(user)
+        session.commit()
+        session.close()
+    except Exception as e:
+        session.rollback()
+        print(f'Помилка, detele_user: {e}')
