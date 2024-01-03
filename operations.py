@@ -59,7 +59,7 @@ def alert_status(status):
         return None
 
 
-def get_region_name(region_id):
+def get_region_name(region_id: str):
     data = read_json_file('regions.json')
     for state in data['states']:
         if state['regionId'] == region_id:
@@ -137,3 +137,5 @@ def time_zone_to_time(time_zone):
 
 
 
+print(get_region_name('17'))
+print(find_full_region_info('одеська'))
