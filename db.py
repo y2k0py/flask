@@ -3,9 +3,9 @@ from sqlalchemy.orm import sessionmaker
 import sqlalchemy
 from sqlalchemy import inspect
 
-engine = create_engine('postgresql://postgres:4AFDaA1*-4c52db-*3DAd-aa1FEDF*CG@monorail.proxy.rlwy.net:32226/railway')
+engine = create_engine('postgresql://postgres:AFdfg5E6fefEgDfAb2Dcb3*bfG3Gcd-1@viaduct.proxy.rlwy.net:21558/railway')
 # test db postgresql://postgres:1F4DD3-1gE443ddfGDc45gGA5e2261b2@viaduct.proxy.rlwy.net:17121/railway
-# real db postgresql://postgres:4AFDaA1*-4c52db-*3DAd-aa1FEDF*CG@monorail.proxy.rlwy.net:32226/railway
+# real db postgresql://postgres:AFdfg5E6fefEgDfAb2Dcb3*bfG3Gcd-1@viaduct.proxy.rlwy.net:21558/railway
 # Create a base class for declarative class definitions
 Base = sqlalchemy.orm.declarative_base()
 
