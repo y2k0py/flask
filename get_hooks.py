@@ -93,12 +93,12 @@ def send_alert_from_near_region(received_alert, user):
     # Получаем близлежащие регионы пользователя
     nearby_regions = found_near_region(user['region_id'])
 
-    # Проверяем, находится ли регион уведомления среди близлежащих
-    if int(received_alert['regionId']) in nearby_regions:
-        # Определяем ID пользователя и текст сообщения
-        user_id = user['telegram_id']
-        text = generate_alert_text(received_alert, is_main_region=False, is_nearby=True)
-        send_message(user_id, text)
+    if user['near_region'] is True:
+        if int(received_alert['regionId']) in nearby_regions:
+            # Определяем ID пользователя и текст сообщения
+            user_id = user['telegram_id']
+            text = generate_alert_text(received_alert, is_main_region=False, is_nearby=True)
+            send_message(user_id, text)
 
 
 def change_gender(region_name):
@@ -143,5 +143,5 @@ def send_message(user_id, text):
 if __name__ == "__main__":
     from waitress import serve
 
-    subscribe_to_webhook()
+    # subscribe_to_webhook()
     serve(app, host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
