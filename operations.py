@@ -136,6 +136,3 @@ def time_zone_to_time(time_zone):
         print(f'Ошибка, time_zone_to_time: {e}')
 
 
-
-print(get_region_name('17'))
-print(find_full_region_info('одеська'))
